@@ -106,27 +106,31 @@ namespace Qitana.PingPlugin
                 return;
             }
 
-            lock (pingResultsLock)
+            try
             {
-                int ttl = (e.Reply.Options != null) ? e.Reply.Options.Ttl : 0;
-
-                this.PingResults.Add(new PingResult
+                lock (pingResultsLock)
                 {
-                    TimestampRaw = ((PingUserToken)e.UserState).Timestamp,
-                    Address = e.Reply.Address.ToString(),
-                    Status = e.Reply.Status.ToString(),
-                    RTT = e.Reply.RoundtripTime,
-                    TTL = ttl,
-                });
+                    int ttl = (e.Reply.Options != null) ? e.Reply.Options.Ttl : 0;
 
-                this.PingResults.RemoveAll(x => x.TimestampRaw < now.AddSeconds(-300));
+                    this.PingResults.Add(new PingResult
+                    {
+                        TimestampRaw = ((PingUserToken)e.UserState).Timestamp,
+                        Address = e.Reply.Address.ToString(),
+                        Status = e.Reply.Status.ToString(),
+                        RTT = e.Reply.RoundtripTime,
+                        TTL = ttl,
+                    });
+
+                    this.PingResults.RemoveAll(x => x.TimestampRaw < now.AddSeconds(-300));
 
 
-                if (e.Reply.Status == IPStatus.Success)
-                {
-                    this.LatestTTL = ttl;
+                    if (e.Reply.Status == IPStatus.Success)
+                    {
+                        this.LatestTTL = ttl;
+                    }
                 }
             }
+            catch { }
         }
 
         public bool ValidateProcess()
