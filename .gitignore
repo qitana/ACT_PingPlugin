@@ -2,6 +2,7 @@ Thirdparty/ACT/*.exe
 Thirdparty/ACT/*.dll
 Thirdparty/OverlayPlugin/*.exe
 Thirdparty/OverlayPlugin/*.dll
+Build/
 Distribute/*
 
 ## Ignore Visual Studio temporary files, build results, and
