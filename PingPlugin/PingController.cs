@@ -10,7 +10,7 @@ using System.Web.Script.Serialization;
 
 namespace Qitana.PingPlugin
 {
-    public class PingController : IDisposable
+    public sealed class PingController : IDisposable
     {
         private Thread pingThread;
         private Thread targetAddressThread;
