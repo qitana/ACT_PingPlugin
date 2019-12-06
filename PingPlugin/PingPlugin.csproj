@@ -8,10 +8,12 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Qitana.PingPlugin</RootNamespace>
-    <AssemblyName>PingOverlay</AssemblyName>
+    <AssemblyName>PingPlugin</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,12 +39,12 @@
       <HintPath>..\Thirdparty\ACT\Advanced Combat Tracker.exe</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="HtmlRenderer">
-      <HintPath>..\Thirdparty\OverlayPlugin\HtmlRenderer.dll</HintPath>
+    <Reference Include="FFXIV_ACT_Plugin">
+      <HintPath>..\Thirdparty\FFXIV_ACT_Plugin\FFXIV_ACT_Plugin.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="OverlayPlugin">
-      <HintPath>..\Thirdparty\OverlayPlugin\OverlayPlugin.dll</HintPath>
+    <Reference Include="FFXIV_ACT_Plugin.Common">
+      <HintPath>..\Thirdparty\FFXIV_ACT_Plugin\FFXIV_ACT_Plugin.Common.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="OverlayPlugin.Common">
@@ -67,33 +69,28 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="Xilium.CefGlue">
-      <HintPath>..\Thirdparty\OverlayPlugin\Xilium.CefGlue.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ConfigEventArgs.cs" />
     <Compile Include="PingController.cs" />
-    <Compile Include="PingOverlay.cs" />
-    <Compile Include="PingOverlayConfig.cs" />
-    <Compile Include="PingOverlayConfigPanel.cs">
+    <Compile Include="PingEventSource.cs" />
+    <Compile Include="PingEventSourceConfig.cs" />
+    <Compile Include="PingEventSourceConfigPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="PingOverlayConfigPanel.designer.cs">
-      <DependentUpon>PingOverlayConfigPanel.cs</DependentUpon>
+    <Compile Include="PingEventSourceConfigPanel.Designer.cs">
+      <DependentUpon>PingEventSourceConfigPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="FFXIVProcessHelper.cs" />
     <Compile Include="Messages.Designer.cs" />
     <Compile Include="NativeMethods.cs" />
-    <Compile Include="OverlayAddonMain.cs" />
+    <Compile Include="PingPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Settings.cs" />
     <Compile Include="UpdateChecker.cs" />
     <Compile Include="UpdateDialog.cs">
       <SubType>Form</SubType>
@@ -110,13 +107,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="PingOverlayConfigPanel.ja-JP.resx">
-      <DependentUpon>PingOverlayConfigPanel.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="PingOverlayConfigPanel.resx">
-      <DependentUpon>PingOverlayConfigPanel.cs</DependentUpon>
-      <SubType>Designer</SubType>
+    <EmbeddedResource Include="PingEventSourceConfigPanel.resx">
+      <DependentUpon>PingEventSourceConfigPanel.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Messages.ja-JP.resx">
       <SubType>Designer</SubType>
@@ -134,36 +126,27 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="resources\PingPlugin\css\handle.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="resources\PingPlugin\css\pingStatus.css">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="resources\PingPlugin\debug.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="resources\PingPlugin\js\debug.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="resources\PingPlugin\js\pingStatus.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="resources\PingPlugin\js\vue-0.12.7.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="resources\PingPlugin\js\vue-0.12.7.min.js">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="resources\PingPlugin\pingStatus.html">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <PackageReference Include="Costura.Fody">
+      <Version>4.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="Fody">
+      <Version>6.0.0</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.3</Version>
+    </PackageReference>
+    <PackageReference Include="Resource.Embedder">
+      <Version>2.0.1</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="FodyWeavers.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>copy /Y "$(SolutionDir)README.md" "$(TargetDir)PingOverlay-README.txt"
-copy /Y "$(SolutionDir)LICENSE.txt" "$(TargetDir)PingOverlay-LICENSE.txt"
-mkdir "$(TargetDir)addons"
-move /Y "$(TargetPath)" "$(TargetDir)addons"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>
