@@ -1,0 +1,54 @@
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>ping</title>
+  <link rel="stylesheet" href="css/ping.css">
+</head>
+
+<body>
+  <div id="vue" v-bind:class="{ 'resize-handle': !locked }">
+    <!-- outer -->
+    <div v-cloak class="outer">
+      <!-- innner -->
+      <div class="inner">
+        <div class="background"></div>
+        <!-- Front -->
+        <div class="front">
+          <div class="box">
+            <div class="name">
+              <span class="header">Server: </span>
+              <span class="value">{{ latest.Address }}&ensp;</span>
+              <template v-for="(e, i) in stats">
+                  <span class="header"> / </span>
+                  <span class="header">{{ ( "    " + String(e.key)).substr(-3).replace(/ /g,"&ensp;") }} Avg: </span>
+    
+                  <span class="header">Loss: </span>
+                  <span class="value"
+                    v-bind:class="e | checkLoss">{{ ("      " + String(e.loss.toFixed(0))).substr(-3).replace(/ /g,"&ensp;") }}
+                    %&ensp;</span>
+                  <span class="header">Delay: </span>
+                  <span class="value"
+                    v-bind:class="e | checkDelay">{{ ("      " + String(e.rtt.toFixed(1))).substr(-5).replace(/ /g,"&ensp;") }}
+                    ms&ensp;</span>
+                  <span class="header">Jitter: </span>
+                  <span class="value"
+                    v-bind:class="e | checkJitter">{{ ("      " + String(e.jitter.toFixed(1))).substr(-5).replace(/ /g,"&ensp;") }}
+                    ms</span>
+                </template>
+                </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- load js -->
+  <script src="https://unpkg.com/vue@2.6.10/dist/vue.min.js"></script>
+  <script src="js/common.js"></script>
+  <script src="js/ping.js"></script>
+
+</body>
+
+</html>
