@@ -43,6 +43,6 @@ cd Distribute
 $folder = "PingPlugin-" + $version
 
 # アーカイブ
-& "C:\Program Files\7-Zip\7z.exe" "a" "$folder.zip" "$folder"
+& "C:\Program Files\7-Zip\7z.exe" "a" "$folder.7z" "$folder"
 
 pause
