@@ -48,6 +48,11 @@ namespace Qitana.PingPlugin
             pingTimer.Elapsed += (sender, e) =>
             {
                 pingTimer.Interval = this.Config.Interval;
+
+                if (!this.Config.Enabled)
+                {
+                    return;
+                }
                 if (string.IsNullOrWhiteSpace(Address))
                 {
                     return;
