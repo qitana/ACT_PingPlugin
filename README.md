@@ -1,6 +1,41 @@
 # ACT_PingPlugin
 
+The add-on of [ngld/OverlayPlugin](https://github.com/ngld/OverlayPlugin) which shows ping status for connected server.
+
 現在接続中のゲームサーバーに対するpingステータスをオーバーレイ表示する、[ngld/OverlayPlugin](https://github.com/ngld/OverlayPlugin) のアドオンです。 
+
+[日本語の説明はこちら / README for ja-JP is here](#Japanese)
+
+
+
+## Requirements
+
+- [ngld/OverlayPlugin](https://github.com/ngld/OverlayPlugin)
+
+## Features
+
+- Displays the dungeon name on mathed by Duty Finder.
+  - Also be notified by text-to-speech.
+- Show queue position and expeted wait time.
+  - The actual queue position is displayed even if the number of waits is 50 or more.
+
+## How to use
+
+1. Install [ngld/OverlayPlugin](https://github.com/ngld/OverlayPlugin).
+2. Download DFAPlugin from release page and extract it to any folder.  
+It is recommended that you create and place a separate folder with other plugins.
+3. Install PingPlugin as an ACT plugin.
+4. Restart ACT once.
+5. Confirm that Ping EventSource is added to the OverlayPlugin setting screen.
+6. Add an overlay with OverlayPlugin. Select "MiniParse" as the type.
+7. On the setting screen, set the URL to `https://qitana.github.io/ACT_PingPlugin/ping.html`.
+8. Verify that information is displayed during the game. 
+
+## Other overlay type
+
+See https://qitana.github.io/ACT_PingPlugin/
+
+# Japanese
 
 ## 注意事項
 **v2.x からは ngld/OverlayPlugin でないと動きません！hibiyasleep/OverlayPlugin では動きません！  
