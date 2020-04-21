@@ -45,6 +45,13 @@ var vue = new Vue({
       Status: "",
       RTT: 0,
       TTL: 0,
+    },
+    lastSucceeded: {
+      Timestamp: 0,
+      Address: "",
+      Status: "",
+      RTT: 0,
+      TTL: 0,
     }
   },
   mounted: function () {
@@ -64,6 +71,13 @@ var vue = new Vue({
     update: function (e) {
       if (e.type == "onPingStatusUpdateEvent") {
         let data = JSON.parse(e.detail.statusJson)
+
+        // update if ping succeeded
+        if (data.Status && data.Status == "Success") {
+          this.lastSucceeded = data;
+        } else {
+          data.Address = this.lastSucceeded.Address;
+        }
 
         // update latest
         this.latest = data;
