@@ -14,10 +14,7 @@ The add-on of [ngld/OverlayPlugin](https://github.com/ngld/OverlayPlugin) which 
 
 ## Features
 
-- Displays the dungeon name on mathed by Duty Finder.
-  - Also be notified by text-to-speech.
-- Show queue position and expeted wait time.
-  - The actual queue position is displayed even if the number of waits is 50 or more.
+It identifies the server with which the FFXIV client is currently communicating, pings that server, and measures information such as delays.
 
 ## How to use
 
