@@ -1,5 +1,7 @@
 Thirdparty/ACT/*.exe
 Thirdparty/ACT/*.dll
+Thirdparty/FFXIV_ACT_Plugin/*.exe
+Thirdparty/FFXIV_ACT_Plugin/*.dll
 Thirdparty/OverlayPlugin/*.exe
 Thirdparty/OverlayPlugin/*.dll
 Build/
