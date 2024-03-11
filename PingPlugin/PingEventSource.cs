@@ -64,7 +64,7 @@ namespace Qitana.PingPlugin
 
         }
 
-        public override void Dispose()
+        protected override void Dispose(bool disposing)
         {
             pingController?.Stop();
             pingController?.Dispose();
