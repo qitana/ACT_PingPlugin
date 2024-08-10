@@ -1,0 +1,20 @@
+{
+  "ACT": {
+    "url": "https://github.com/EQAditu/AdvancedCombatTracker/releases/download/3.4.9.271/ACTv3.zip",
+    "filename": "ACTv3.zip",
+    "dest": "Thirdparty/ACT",
+    "sha256": "eb5dc7074c32a534d4e80e0248976c9499c377b61892be2ae85ad631e5af6589"
+  },
+  "FFXIV_ACT_Plugin": {
+    "url": "https://github.com/ravahn/FFXIV_ACT_Plugin/raw/master/Releases/FFXIV_ACT_Plugin_SDK_2.0.6.1.zip",
+    "filename": "FFXIV_ACT_Plugin_SDK_2.0.6.1.zip",
+    "dest": "Thirdparty/FFXIV_ACT_Plugin",
+    "sha256": "ed98fa01ec2c7ed2ac843fa8ea2eec1d66f86fad4c6864de4d73d5cfbf163dce"
+  },
+  "OverlayPlugin": {
+    "url": "https://github.com/OverlayPlugin/OverlayPlugin/releases/download/v0.19.33/OverlayPlugin-0.19.33.zip",
+    "filename": "OverlayPlugin-0.19.33.zip",
+    "dest": "Thirdparty/OverlayPlugin",
+    "stripRootFolder": true
+  }
+}
