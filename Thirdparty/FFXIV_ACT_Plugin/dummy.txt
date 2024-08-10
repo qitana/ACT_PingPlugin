@@ -1,3 +1,0 @@
-Require files:
-
-- Advanced Combat Tracker.exe

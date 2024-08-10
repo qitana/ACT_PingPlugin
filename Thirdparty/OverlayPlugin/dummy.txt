@@ -1,7 +1,0 @@
-Require files:
-
-- HtmlRenderer.dll
-- OverlayPlugin.Common.dll
-- OverlayPlugin.Core.dll
-- OverlayPlugin.dll
-- Xilium.CefGlue.dll
