@@ -45,7 +45,7 @@ namespace Qitana.PingPlugin
                 var json = String.Empty;
                 using (var wc = new WebClient())
                 {
-                    wc.Headers.Add("User-Agent", @"ACT PingPlugin UpdateChecker/1.0; using .NET WebClient/4.0.0");
+                    wc.Headers.Add("User-Agent", @"ACT PingPlugin UpdateChecker/3.0; using .NET WebClient/4.0.0");
                     using (var stream = wc.OpenRead(EndPoint))
                     using (var reader = new StreamReader(stream))
                     {
@@ -68,19 +68,19 @@ namespace Qitana.PingPlugin
                 var current = Assembly.GetExecutingAssembly().GetName().Version;
                 if (current >= latest)
                 {
-                    release = String.Format(Messages.UpdateNotFound, current.ToString());
+                    release = String.Format("The plugin is up to date. (v{0})", current.ToString());
                     return release;
                 }
                 if (ignore >= latest)
                 {
-                    release = String.Format(Messages.UpdateAvailable, latest.ToString());
+                    release = String.Format("Update is available but ignored. (v{0})", latest.ToString());
                     return release;
                 }
-                var message = Messages.NewVersionIsAvailable + Environment.NewLine + Environment.NewLine;
-                message += String.Format(Messages.Update, latest.ToString()) + Environment.NewLine;
-                message += String.Format(Messages.Current, current.ToString()) + Environment.NewLine;
+                var message = "New release of PingPlugin is available!" + Environment.NewLine + Environment.NewLine;
+                message += String.Format("Update: v{0}", latest.ToString()) + Environment.NewLine;
+                message += String.Format("Current: v{0}", current.ToString()) + Environment.NewLine;
                 message += Environment.NewLine;
-                message +=Messages.OpenSiteNow;
+                message += "Open release site now?";
                 var updateDialog = new UpdateDialog();
                 if (Advanced_Combat_Tracker.FormActMain.ActiveForm != null)
                 {
@@ -104,7 +104,8 @@ namespace Qitana.PingPlugin
                     default:
                         break;
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 release = $"Update check error: {ex.ToString()}";
             }
