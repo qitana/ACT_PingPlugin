@@ -19,7 +19,7 @@ namespace Qitana.PingPlugin
         {
             timer = new System.Timers.Timer()
             {
-                Interval = 5000,
+                Interval = 2500,
                 AutoReset = true
             };
 
@@ -30,6 +30,15 @@ namespace Qitana.PingPlugin
                 {
                     RemoteAddress = address;
                     OnRemoteAddressChanged(address);
+
+                    if(string.IsNullOrEmpty(address))
+                    {
+                        timer.Interval = 2500;
+                    }
+                    else
+                    {
+                        timer.Interval = 15000;
+                    }
                 }
             };
         }
