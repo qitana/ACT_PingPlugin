@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 using RainbowMage.OverlayPlugin;
 using System;
 using System.Collections.Generic;
@@ -12,8 +12,6 @@ namespace Qitana.PingPlugin
         
         private RemoteAddressController remoteAddressController;
         private PingController pingController;
-        private FixedSizeQueue<PingEventArgs> pingResults;
-
 
         public PingEventSource(TinyIoCContainer container) : base(container)
         {
@@ -22,16 +20,10 @@ namespace Qitana.PingPlugin
 #endif
 
             Name = "Ping";
-            pingResults = new FixedSizeQueue<PingEventArgs>(300);
 
             RegisterEventTypes(new List<string>()
             {
                 "onPingStatusUpdateEvent"
-            });
-
-            RegisterEventHandler("getPingResults", (msg) =>
-            {
-                return JArray.FromObject(pingResults.ToArray());
             });
         }
 
@@ -46,7 +38,6 @@ namespace Qitana.PingPlugin
                     Log(LogLevel.Warning, "PING: Exception: " + result.Message);
                     return;
                 }
-                pingResults.Enqueue(result);
                 DispatchToJS(new JSEvents.PingStatusUpdateEvent(result.ToJson()));
             };
             pingController.Start();
