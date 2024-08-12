@@ -12,7 +12,7 @@ namespace Qitana.PingPlugin
         
         private RemoteAddressController remoteAddressController;
         private PingController pingController;
-        private FixedSizeQueue<PingCompletedEventArgs> pingResults;
+        private FixedSizeQueue<PingEventArgs> pingResults;
 
 
         public PingEventSource(TinyIoCContainer container) : base(container)
@@ -22,7 +22,7 @@ namespace Qitana.PingPlugin
 #endif
 
             Name = "Ping";
-            pingResults = new FixedSizeQueue<PingCompletedEventArgs>(300);
+            pingResults = new FixedSizeQueue<PingEventArgs>(300);
 
             RegisterEventTypes(new List<string>()
             {
@@ -38,12 +38,12 @@ namespace Qitana.PingPlugin
         public override void Start()
         {
             pingController?.Dispose();
-            pingController = new PingController("", Config.Interval, Config.Timeout, Config.Enabled);
+            pingController = new PingController(Config);
             pingController.OnPingCompleted += (result) =>
             {
                 if (result.Status == "Exception")
                 {
-                    Log(LogLevel.Warning, "PING: Ping Exception: " + result.Message);
+                    Log(LogLevel.Warning, "PING: Exception: " + result.Message);
                     return;
                 }
                 pingResults.Enqueue(result);
@@ -58,9 +58,15 @@ namespace Qitana.PingPlugin
             {
                 try
                 {
-                    pingController.Address = address;
+                    if(!Config.TrackFFXIVRemoteAddress)
+                    {
+                        return;
+                    }
+
+                    Config.RemoteAddress = address;
 #if DEBUG
                     Log(LogLevel.Info, "PING: Remote address updated: " + address);
+
 #endif
                 }
                 catch (Exception ex)

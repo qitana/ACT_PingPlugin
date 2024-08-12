@@ -8,6 +8,8 @@ namespace Qitana.PingPlugin
     public class PingEventSourceConfig
     {
         public bool Enabled { get; set; } = false;
+        public bool TrackFFXIVRemoteAddress { get; set; } = false;
+        public string RemoteAddress { get; set; } = "";
         public int Interval { get; set; } = 1000;
         public int Timeout { get; set; } = 1000;
         
@@ -22,6 +24,16 @@ namespace Qitana.PingPlugin
                 if (obj.TryGetValue("Enabled", out JToken enabled))
                 {
                     result.Enabled = enabled.ToObject<bool>();
+                }
+                
+                if (obj.TryGetValue("TrackFFXIVRemoteAddress", out JToken trackFFXIVRemoteAddress))
+                {
+                   result.TrackFFXIVRemoteAddress = trackFFXIVRemoteAddress.ToObject<bool>();
+                }
+
+                if (obj.TryGetValue("RemoteAddress", out JToken remoteAddress))
+                {
+                    result.RemoteAddress = remoteAddress.ToObject<string>();
                 }
 
                 if (obj.TryGetValue("Interval", out JToken interval))
@@ -40,6 +52,11 @@ namespace Qitana.PingPlugin
 
         public void SaveConfig(IPluginConfig pluginConfig)
         {
+            if(TrackFFXIVRemoteAddress == true)
+            {
+                RemoteAddress = "";
+            }
+
             pluginConfig.EventSourceConfigs["qitana.Ping"] = JObject.FromObject(this);
         }
 
