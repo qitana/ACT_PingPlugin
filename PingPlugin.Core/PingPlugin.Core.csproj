@@ -78,6 +78,7 @@
       <DependentUpon>PingEventSourceConfigPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="FFXIVProcessHelper.cs" />
+    <Compile Include="FixedSizeQueue.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="PluginMain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

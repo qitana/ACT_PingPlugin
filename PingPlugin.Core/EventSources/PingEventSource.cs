@@ -12,6 +12,8 @@ namespace Qitana.PingPlugin
         
         private RemoteAddressController remoteAddressController;
         private PingController pingController;
+        private FixedSizeQueue<PingCompletedEventArgs> pingResults;
+
 
         public PingEventSource(TinyIoCContainer container) : base(container)
         {
@@ -20,10 +22,16 @@ namespace Qitana.PingPlugin
 #endif
 
             Name = "Ping";
+            pingResults = new FixedSizeQueue<PingCompletedEventArgs>(300);
 
             RegisterEventTypes(new List<string>()
             {
                 "onPingStatusUpdateEvent"
+            });
+
+            RegisterEventHandler("getPingResults", (msg) =>
+            {
+                return JArray.FromObject(pingResults.ToArray());
             });
         }
 
@@ -38,6 +46,7 @@ namespace Qitana.PingPlugin
                     Log(LogLevel.Warning, "PING: Ping Exception: " + result.Message);
                     return;
                 }
+                pingResults.Enqueue(result);
                 DispatchToJS(new JSEvents.PingStatusUpdateEvent(result.ToJson()));
             };
             pingController.Start();
