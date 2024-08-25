@@ -1,10 +1,10 @@
-import type { PingStatistic, PingResult } from "../ping";
+import type { PingStatistic } from "../ping";
 import clsx from "clsx/lite";
 
-function OneLinePage({ pingStatistics, latestPingResult }:
+function OneLinePage({ remoteAddress, pingStatistics }:
   {
+    remoteAddress: string | null;
     pingStatistics: Map<number, PingStatistic>;
-    latestPingResult: PingResult | null;
   }) {
 
   const firstPingStatistic = Array.from(pingStatistics).find((x) => x)
@@ -27,7 +27,7 @@ function OneLinePage({ pingStatistics, latestPingResult }:
         <tbody>
           <tr className="text-right">
             <td className="text-custom-gold text-shadow-custom-gold">Server:</td>
-            <td className="text-custom-blue text-shadow-custom-blue pl-1 pr-4 tabular-nums">{latestPingResult?.address}</td>
+            <td className="text-custom-blue text-shadow-custom-blue pl-1 pr-4 tabular-nums">{remoteAddress || 'Unknown'}</td>
             <td className="text-custom-gold text-shadow-custom-gold px-1">{period} Avg:</td>
             <td className="text-custom-gold text-shadow-custom-gold">Loss:</td>
             <td className={

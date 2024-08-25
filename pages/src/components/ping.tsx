@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react"
-import { addOverlayListener, removeOverlayListener } from "../libs/overlay-plugin";
+import { addOverlayListener, removeOverlayListener, callOverlayHandler } from "../libs/overlay-plugin";
 import handleImage from '/src/assets/handle.png';
 import clsx from "clsx/lite";
 import DefaultPage from "./ui/default";
@@ -28,7 +28,7 @@ export type PingStatistic = {
 
 function Ping({ ui = 'oneline' }: { ui: 'default' | 'oneline' }) {
   const [isLocked, setIsLocked] = useState(false);
-  const [latestPingResult, setLatestPingResult] = useState<PingResult | null>(null);
+  const [remoteAddress, setRemoteAddress] = useState<string | null>(null);
   const [pingResults, setPingResults] = useState<PingResult[]>([]);
 
   // Get the aggregation periods from the query string
@@ -60,15 +60,21 @@ function Ping({ ui = 'oneline' }: { ui: 'default' | 'oneline' }) {
       } else if (samplesCount > 0) {
         return loss > 50 ? 'Critical' : loss > 25 ? 'Warning' : 'Normal';
       } else {
-        return 'Normal';
+        return loss > 0 ? 'Critical' : 'Normal';
       }
     }
 
     const checkRTTWarningLevel = (rtt: number) => {
+      if (isNaN(rtt)) {
+        return 'Critical';
+      }
       return rtt > 50 ? 'Critical' : rtt > 30 ? 'Warning' : 'Normal';
     }
 
     const checkJitterWarningLevel = (jitter: number, rtt: number) => {
+      if (isNaN(rtt)) {
+        return 'Critical';
+      }
       if (rtt > 50) {
         return jitter / rtt > 0.2 ? 'Critical' : jitter / rtt > 0.1 ? 'Warning' : 'Normal';
       } else if (rtt > 25) {
@@ -83,20 +89,23 @@ function Ping({ ui = 'oneline' }: { ui: 'default' | 'oneline' }) {
     }
 
     for (const period of aggregationPeriods) {
-      const targetAddress = latestPingResult?.address || '';
-      const ipFiltered = pingResults.filter((v) => v.address === targetAddress);
+      if (!remoteAddress) {
+        stats.set(period, { address: 'Unknown', loss: 100, lossWarningLevel: 'Critical', rtt: -1, rttWarningLevel: 'Critical', jitter: -1, jitterWarningLevel: 'Critical' });
+        return stats;
+      }
+      const ipFiltered = pingResults.filter((v) => v.address === remoteAddress);
       const samples = period < ipFiltered.length ? ipFiltered.slice(-period) : ipFiltered;
       const successSamples = samples.filter((v) => v.status === 'Success');
-      const loss = samples.length > 0 ? (1.0 - successSamples.length / samples.length) * 100 : 0;
+      const loss = samples.length > 0 ? (1.0 - successSamples.length / samples.length) * 100 : 100;
       const lossWarningLevel = checkLossWarningLevel(loss, samples.length);
-      const rtt = successSamples.length > 0 ? successSamples.reduce((acc, v) => acc + v.rtt, 0) / successSamples.length : 0;
+      const rtt = successSamples.length > 0 ? successSamples.reduce((acc, v) => acc + v.rtt, 0) / successSamples.length : NaN;
       const rttWarningLevel = checkRTTWarningLevel(rtt);
       const jitter = successSamples.length > 1 ? Math.sqrt(successSamples.reduce((acc, v) => acc + Math.pow(v.rtt - rtt, 2), 0) / (successSamples.length - 1)) : 0;
       const jitterWarningLevel = checkJitterWarningLevel(jitter, rtt);
-      stats.set(period, { address: targetAddress, loss, lossWarningLevel, rtt, rttWarningLevel, jitter, jitterWarningLevel });
+      stats.set(period, { address: remoteAddress, loss, lossWarningLevel, rtt, rttWarningLevel, jitter, jitterWarningLevel });
     }
     return stats;
-  }, [pingResults, aggregationPeriods, latestPingResult]);
+  }, [remoteAddress, pingResults, aggregationPeriods]);
 
   useEffect(() => {
     const handleOverlayStateUpdate = (ev: CustomEvent<{
@@ -117,7 +126,11 @@ function Ping({ ui = 'oneline' }: { ui: 'default' | 'oneline' }) {
         rtt: status.RTT,
         ttl: status.TTL
       }
-      setLatestPingResult(() => result);
+      if (result.status === 'Success') {
+        if (remoteAddress !== result.address) {
+          setRemoteAddress(() => result.address);
+        }
+      }
       setPingResults((prev) => {
         if (prev.length >= maxNumberOfSamples) {
           prev.shift()
@@ -126,13 +139,26 @@ function Ping({ ui = 'oneline' }: { ui: 'default' | 'oneline' }) {
       })
     };
 
+    const handleOnPingRemoteAddressChangedEvent = (ev: Parameters<EventMap['onPingRemoteAddressChangedEvent']>[0]) => {
+      setRemoteAddress(ev.detail?.address || null);
+    }
+
     document.addEventListener('onOverlayStateUpdate', handleOverlayStateUpdate);
     addOverlayListener('onPingStatusUpdateEvent', handleOnPingStatusUpdateEvent);
+    addOverlayListener('onPingRemoteAddressChangedEvent', handleOnPingRemoteAddressChangedEvent);
+
+    // Get the initial remote address. Return address by onPingRemoteAddressChangedEvent.
+    const getInitialRemoteAddress = async () => {
+      await callOverlayHandler({ call: 'getPingRemoteAddress' });
+    };
+    getInitialRemoteAddress();
+
 
     return () => {
       // Cleanup the event listeners
       document.removeEventListener('onOverlayStateUpdate', handleOverlayStateUpdate);
       removeOverlayListener('onPingStatusUpdateEvent', handleOnPingStatusUpdateEvent);
+      removeOverlayListener('onPingRemoteAddressChangedEvent', handleOnPingRemoteAddressChangedEvent);
     }
   }, [])
 
@@ -143,8 +169,8 @@ function Ping({ ui = 'oneline' }: { ui: 'default' | 'oneline' }) {
       {/* Overlay handle */}
       {!isLocked && <img src={handleImage} alt="handle" className="absolute bottom-0 right-0" />}
       {/* Overlay content */}
-      {ui === 'default' && <DefaultPage latestPingResult={latestPingResult} pingStatistics={pingStatistics} />}
-      {ui === 'oneline' && <OneLinePage latestPingResult={latestPingResult} pingStatistics={pingStatistics} />}
+      {ui === 'default' && <DefaultPage remoteAddress={remoteAddress} pingStatistics={pingStatistics} />}
+      {ui === 'oneline' && <OneLinePage remoteAddress={remoteAddress} pingStatistics={pingStatistics} />}
     </div>
   )
 }

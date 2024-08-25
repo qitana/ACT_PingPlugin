@@ -1,23 +1,17 @@
-import type { PingStatistic, PingResult } from "../ping";
+import type { PingStatistic } from "../ping";
 import clsx from "clsx/lite";
 
-function DefaultPage({ pingStatistics, latestPingResult }:
+function DefaultPage({ remoteAddress, pingStatistics }:
   {
+    remoteAddress: string | null;
     pingStatistics: Map<number, PingStatistic>;
-    latestPingResult: PingResult | null;
   }) {
   return (
     <div className="font-inter text-sm">
       {/* Ping status header */}
-      <div className="flex gap-2">
-        <div className="space-x-1">
-          <span className="text-custom-gold text-shadow-custom-gold">Server:</span>
-          <span className="text-custom-blue text-shadow-custom-blue tabular-nums">{latestPingResult?.address}</span>
-        </div>
-        <div className="space-x-1">
-          <span className="text-custom-gold text-shadow-custom-gold">TTL:</span>
-          <span className="text-custom-blue text-shadow-custom-blue tabular-nums">{latestPingResult?.ttl}</span>
-        </div>
+      <div className="space-x-1">
+        <span className="text-custom-gold text-shadow-custom-gold">Server:</span>
+        <span className="text-custom-blue text-shadow-custom-blue tabular-nums">{remoteAddress || 'Unknown'}</span>
       </div>
       {/* Ping statistics */}
       <div className="ml-2">

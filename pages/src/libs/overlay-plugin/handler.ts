@@ -25,10 +25,15 @@ type OpenWebsiteWithWSHandler = (msg: {
   url: string;
 }) => void;
 
+type GetPingRemoteAddressHandler = (msg: {
+  call: 'getPingRemoteAddress';
+}) => void;
+
 export type OverlayHandlerAll = {
   'broadcast': BroadcastHandler;
   'subscribe': SubscribeHandler;
   'openWebsiteWithWS': OpenWebsiteWithWSHandler;
+  'getPingRemoteAddress': GetPingRemoteAddressHandler;
 };
 
 export type OverlayHandlerTypes = keyof OverlayHandlerAll;
@@ -46,8 +51,6 @@ export type OverlayHandlerFuncs = {
     msg: Parameters<OverlayHandlerAll[call]>[0],
   ) => OverlayHandlerResponses[call];
 };
-
-
 
 type UnionToIntersection<U> = (U extends U ? (k: U) => void : never) extends ((k: infer I) => void)
   ? I
