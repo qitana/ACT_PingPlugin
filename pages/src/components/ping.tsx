@@ -95,7 +95,6 @@ function Ping({ ui = 'oneline' }: { ui: 'default' | 'oneline' }) {
       const jitterWarningLevel = checkJitterWarningLevel(jitter, rtt);
       stats.set(period, { address: targetAddress, loss, lossWarningLevel, rtt, rttWarningLevel, jitter, jitterWarningLevel });
     }
-    console.log('f1');
     return stats;
   }, [pingResults, aggregationPeriods, latestPingResult]);
 
@@ -110,7 +109,6 @@ function Ping({ ui = 'oneline' }: { ui: 'default' | 'oneline' }) {
       if (!ev.detail?.statusJson) {
         return;
       }
-      console.log(ev.detail.statusJson);
       const status = JSON.parse(ev.detail.statusJson);
       const result: PingResult = {
         timestamp: status.Timestamp,
