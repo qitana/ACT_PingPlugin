@@ -23,7 +23,14 @@ namespace Qitana.PingPlugin
 
             RegisterEventTypes(new List<string>()
             {
-                "onPingStatusUpdateEvent"
+                "onPingStatusUpdateEvent",
+                "onPingRemoteAddressChangedEvent"
+            });
+
+            RegisterEventHandler("getPingRemoteAddress", (msg) =>
+            {
+                DispatchToJS(new JSEvents.PingRemoteAddressChangedEvent(Config.RemoteAddress));
+                return null;
             });
         }
 
@@ -44,17 +51,13 @@ namespace Qitana.PingPlugin
 
 
             remoteAddressController?.Dispose();
-            remoteAddressController = new RemoteAddressController();
+            remoteAddressController = new RemoteAddressController(Config);
             remoteAddressController.OnRemoteAddressChanged += (address) =>
             {
                 try
                 {
-                    if(!Config.TrackFFXIVRemoteAddress)
-                    {
-                        return;
-                    }
-
                     Config.RemoteAddress = address;
+                    DispatchToJS(new JSEvents.PingRemoteAddressChangedEvent(address));
 #if DEBUG
                     Log(LogLevel.Info, "PING: Remote address updated: " + address);
 
@@ -118,6 +121,13 @@ namespace Qitana.PingPlugin
             public string statusJson;
             public PingStatusUpdateEvent(string statusJson) { this.statusJson = statusJson; }
             public string EventName() { return "onPingStatusUpdateEvent"; }
+        }
+
+        public class PingRemoteAddressChangedEvent : JSEvent
+        {
+            public string address;
+            public PingRemoteAddressChangedEvent(string address) { this.address = address; }
+            public string EventName() { return "onPingRemoteAddressChangedEvent"; }
         }
     }
 }

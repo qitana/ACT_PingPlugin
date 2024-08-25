@@ -9,36 +9,51 @@ namespace Qitana.PingPlugin
 {
     internal sealed class RemoteAddressController: IDisposable
     {
+        PingEventSourceConfig Config;
         private System.Timers.Timer timer;
 
         public delegate void RemoteAddressChangedEvent(string address);
         public event RemoteAddressChangedEvent OnRemoteAddressChanged;
         public string RemoteAddress { get; private set; }
 
-        public RemoteAddressController()
+        public RemoteAddressController(PingEventSourceConfig config)
         {
+            Config = config;
+
             timer = new System.Timers.Timer()
             {
-                Interval = 2500,
+                Interval = 1000,
                 AutoReset = true
             };
 
             timer.Elapsed += (sender, e) =>
             {
-                string address = FFXIVProcessHelper.GetFFXIVRemoteAddresses().FirstOrDefault();
-                if (address != RemoteAddress)
+                if (Config.TrackFFXIVRemoteAddress)
                 {
-                    RemoteAddress = address;
-                    OnRemoteAddressChanged(address);
+                    string address = FFXIVProcessHelper.GetFFXIVRemoteAddresses().FirstOrDefault();
+                    if (address != RemoteAddress)
+                    {
+                        RemoteAddress = address;
+                        OnRemoteAddressChanged(address);
 
-                    if(string.IsNullOrEmpty(address))
-                    {
-                        timer.Interval = 2500;
+                        if (string.IsNullOrEmpty(address))
+                        {
+                            timer.Interval = 2500;
+                        }
+                        else
+                        {
+                            timer.Interval = 15000;
+                        }
                     }
-                    else
+                } 
+                else
+                {
+                    if (Config.RemoteAddress != RemoteAddress)
                     {
-                        timer.Interval = 15000;
+                        RemoteAddress = Config.RemoteAddress;
+                        OnRemoteAddressChanged(Config.RemoteAddress);
                     }
+                    timer.Interval = 1000;
                 }
             };
         }
