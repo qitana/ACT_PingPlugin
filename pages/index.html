@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="src/globals.css" rel="stylesheet" />
+  <title>Ping Plugin</title>
+</head>
+
+<body class="font-inter m-4">
+  <h1 class="text-2xl font-semibold my-8">ACT_PingPlugin</h1>
+  <h2 class="text-xl font-semibold my-6">Ping Overlays</h2>
+  <div class="ml-4">
+    <h3 class="text-base font-semibold my-4">標準レイアウト (Normal Layout)</h3>
+    <div class="ml-4">
+      <p class="mb-4">
+        <a href="ping.html" class="text-indigo-700 font-semibold">ping.html</a>
+      </p>
+      <p class="mb-4">
+        URLの後ろに <span class="font-mono border border-gray-300 rounded-md px-1">?agg=30</span>
+        と付けると、30アイテムの平均時間が表示されるようになります。<br />
+        <span class="font-mono border border-gray-300 rounded-md px-1">?agg=30</span> means show 30 items average only.
+      </p>
+      <p class="mb-4">
+        URLの後ろに <span class="font-mono border border-gray-300 rounded-md px-1">?agg=5,10,30</span>
+        と付けると、5アイテム、10アイテム、30アイテムの平均時間が表示されるようになります。<br />
+        <span class="font-mono border border-gray-300 rounded-md px-1">?agg=5,10,30</span> means show 5, 10 and 30 items
+        average.
+      </p>
+      <p class="mb-4">
+        何も付けなかった場合は <span class="font-mono border border-gray-300 rounded-md px-1">?agg=5,30,60</span>
+        が指定されたと見なして表示されます。<br />
+        If `avg` is not set, same as <span class="font-mono border border-gray-300 rounded-md px-1">?agg=5,10,30</span>.
+      </p>
+      <p class="mb-4">
+        例(ex): <span
+          class="font-mono border border-gray-300 rounded-md px-1">https://qitana.github.io/ACT_PingPlugin/ping.html?agg=10,30,60</span>
+      </p>
+    </div>
+    <h3 class="text-base font-semibold my-4">1行レイアウト (One-Line Layout)</h3>
+    <div class="ml-4">
+      <p class="mb-4">
+        <a href="ping_oneline.html" class="text-indigo-700 font-semibold">ping_oneline.html</a>
+      </p>
+      <p class="mb-4">
+        1行レイアウトの場合は、下記のavg変数を使用して、表示される情報を1つだけにすることをおすすめします。<br />
+        If useing One-Line Layout, recommend to use `agg` variable.
+      </p>
+      <p class="mb-4">
+        例(ex): <span
+          class="font-mono border border-gray-300 rounded-md px-1">https://qitana.github.io/ACT_PingPlugin/ping_oneline.html?agg=30</span>
+      </p>
+    </div>
+  </div>
+
+</body>
+
+</html>
