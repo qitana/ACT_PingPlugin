@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  height: 100%;
+  overflow: hidden;
+  background-color: transparent;
+}
+
+body {
+  height: 100%;
+}
