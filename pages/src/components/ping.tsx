@@ -1,9 +1,10 @@
 import { useEffect, useState, useMemo } from "react"
-import { addOverlayListener, removeOverlayListener, EventParameter } from "../libs/overlay-plugin";
+import { addOverlayListener, removeOverlayListener } from "../libs/overlay-plugin";
 import handleImage from '/src/assets/handle.png';
 import clsx from "clsx/lite";
 import DefaultPage from "./ui/default";
 import OneLinePage from "./ui/oneline";
+import { EventMap } from "../libs/overlay-plugin/event";
 
 export type PingResult = {
   timestamp: number
@@ -105,7 +106,7 @@ function Ping({ ui = 'oneline' }: { ui: 'default' | 'oneline' }) {
       setIsLocked(ev.detail.isLocked);
     }
 
-    const handleOnPingStatusUpdateEvent = (ev: EventParameter) => {
+    const handleOnPingStatusUpdateEvent = (ev: Parameters<EventMap['onPingStatusUpdateEvent']>[0]) => {
       if (!ev.detail?.statusJson) {
         return;
       }
