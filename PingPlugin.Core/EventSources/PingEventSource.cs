@@ -45,7 +45,7 @@ namespace Qitana.PingPlugin
                     Log(LogLevel.Warning, "PING: Exception: " + result.Message);
                     return;
                 }
-                DispatchToJS(new JSEvents.PingStatusUpdateEvent(result.ToJson()));
+                DispatchToJS(new JSEvents.PingStatusUpdateEvent(result));
             };
             pingController.Start();
 
@@ -118,8 +118,20 @@ namespace Qitana.PingPlugin
     {
         public class PingStatusUpdateEvent : JSEvent
         {
-            public string statusJson;
-            public PingStatusUpdateEvent(string statusJson) { this.statusJson = statusJson; }
+            public string version = "v3";
+            public long timestamp;
+            public string address;
+            public string status;
+            public long rtt;
+            public long ttl;
+
+            public PingStatusUpdateEvent(PingEventArgs pingEvent) { 
+                this.timestamp = pingEvent.Timestamp;
+                this.address = pingEvent.Address;
+                this.status = pingEvent.Status;
+                this.rtt = pingEvent.RTT;
+                this.ttl = pingEvent.TTL;
+            }
             public string EventName() { return "onPingStatusUpdateEvent"; }
         }
 
