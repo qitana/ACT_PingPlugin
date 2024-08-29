@@ -7,8 +7,8 @@ namespace Qitana.PingPlugin
     [Serializable]
     public class PingEventSourceConfig
     {
-        public bool Enabled { get; set; } = false;
-        public bool TrackFFXIVRemoteAddress { get; set; } = false;
+        public bool Enabled { get; set; } = true;
+        public bool TrackFFXIVRemoteAddress { get; set; } = true;
         public string RemoteAddress { get; set; } = "";
         public int Interval { get; set; } = 1000;
         public int Timeout { get; set; } = 1000;
