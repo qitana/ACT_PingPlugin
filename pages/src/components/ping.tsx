@@ -115,17 +115,32 @@ function Ping({ ui = 'oneline' }: { ui: 'default' | 'oneline' }) {
     }
 
     const handleOnPingStatusUpdateEvent = (ev: Parameters<EventMap['onPingStatusUpdateEvent']>[0]) => {
-      if (!ev.detail?.statusJson) {
+      let result: PingResult | undefined = undefined;
+
+      if (ev.detail?.version === 'v3') {
+        result = {
+          timestamp: ev.detail.timestamp!,
+          address: ev.detail.address!,
+          status: ev.detail.status!,
+          rtt: ev.detail.rtt!,
+          ttl: ev.detail.ttl!
+        }
+      } else if (ev.detail?.statusJson) {
+        // For backward compatibility. The statusJson is a stringified JSON object.
+        const status = JSON.parse(ev.detail.statusJson);
+        result = {
+          timestamp: status.Timestamp,
+          address: status.Address,
+          status: status.Status,
+          rtt: status.RTT,
+          ttl: status.TTL
+        }
+      }
+
+      if (!result) {
         return;
       }
-      const status = JSON.parse(ev.detail.statusJson);
-      const result: PingResult = {
-        timestamp: status.Timestamp,
-        address: status.Address,
-        status: status.Status,
-        rtt: status.RTT,
-        ttl: status.TTL
-      }
+
       if (result.status === 'Success') {
         if (remoteAddress !== result.address) {
           setRemoteAddress(() => result.address);

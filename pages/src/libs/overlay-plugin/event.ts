@@ -13,7 +13,13 @@ export interface EventMap {
   'onPingStatusUpdateEvent': (ev: {
     type: 'onPingStatusUpdateEvent';
     detail?: {
-      statusJson?: string;
+      version?: string;
+      timestamp?: number;
+      address?: string;
+      status?: string;
+      rtt?: number;
+      ttl?: number;
+      statusJson?: string; // keep this for backward compatibility
     };
   }) => void;
   'onPingRemoteAddressChangedEvent': (ev: {
