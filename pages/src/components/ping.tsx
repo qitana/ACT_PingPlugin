@@ -178,7 +178,7 @@ function Ping({ ui = 'oneline' }: { ui: 'default' | 'oneline' }) {
   }, [])
 
   return (
-    <div className={clsx("h-full relative border px-2 py-1", !isLocked ? "border-gray-400" : "border-transparent")}>
+    <div className={clsx("h-full relative border px-[6px] py-[1px]", !isLocked ? "border-gray-400" : "border-transparent")}>
       {/* Overlay background and border */}
       <div className="absolute top-0 left-0 w-full h-full rounded-md bg-black/50 blur-[2px] -z-10" />
       {/* Overlay handle */}
